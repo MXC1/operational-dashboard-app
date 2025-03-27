@@ -12,6 +12,10 @@ const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks })
     <div className="completion-log-page">
       <div className="completion-log">
         <h2>Completion Log</h2>
+        <div className="completion-log-header">
+          <span className="task-title-header">Task</span>
+          <span className="task-date-header">Date Completed</span>
+        </div>
         <ul>
           {completedTasks.map((task) => (
             <li key={task.id}>
