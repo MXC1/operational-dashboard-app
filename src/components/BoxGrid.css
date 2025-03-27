@@ -1,7 +1,13 @@
+.box-grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .box-grid {
   display: flex;
-  width: 90vw; /* Adjusted to 90% of the screen width */
-  height: 90vh; /* Adjusted to 90% of the screen height */
+  width: 90vw;
+  height: 70vh; /* Adjusted height to leave space for the log */
 }
 
 .category-column {

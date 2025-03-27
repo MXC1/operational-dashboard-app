@@ -1,0 +1,50 @@
+.completion-log-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to the top */
+  height: 100vh;
+  padding: 2rem;
+  width: 100%;
+}
+
+.completion-log {
+  width: 100%;
+  max-height: 90%;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.completion-log h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.completion-log ul {
+  list-style: none;
+  padding: 0;
+}
+
+.completion-log li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.completion-log li:last-child {
+  border-bottom: none;
+}
+
+.task-title {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.task-date {
+  color: #666;
+  font-size: 0.9rem;
+}

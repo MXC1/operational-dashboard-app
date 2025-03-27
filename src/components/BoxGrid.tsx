@@ -71,23 +71,25 @@ const BoxGrid: React.FC = () => {
   }, {} as Record<string, Box[]>);
 
   return (
-    <div className="box-grid">
-      {Object.entries(groupedBoxes).map(([category, boxes]) => (
-        <div key={category} className="category-column">
-          <h2>{category}</h2>
-          {boxes.map((box, index) => (
-            <div
-              key={index}
-              className={`box ${getBoxColor(box.date, box.completed)} ${!isClickable(box.date) ? 'non-clickable' : ''}`}
-              onClick={isClickable(box.date) ? () => toggleCompleted(category, index) : undefined}
-            >
-              <h3>{box.title}</h3>
-              <p>{box.subtitle}</p>
-              <p className="box-date">{box.date}</p>
-            </div>
-          ))}
-        </div>
-      ))}
+    <div className="box-grid-container">
+      <div className="box-grid">
+        {Object.entries(groupedBoxes).map(([category, boxes]) => (
+          <div key={category} className="category-column">
+            <h2>{category}</h2>
+            {boxes.map((box, index) => (
+              <div
+                key={index}
+                className={`box ${getBoxColor(box.date, box.completed)} ${!isClickable(box.date) ? 'non-clickable' : ''}`}
+                onClick={isClickable(box.date) ? () => toggleCompleted(category, index) : undefined}
+              >
+                <h3>{box.title}</h3>
+                <p>{box.subtitle}</p>
+                <p className="box-date">{box.date}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
