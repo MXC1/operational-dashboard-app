@@ -17,19 +17,23 @@ const getBoxColor = (date: string, completed: boolean): string => {
   startOfWeek.setDate(today.getDate() - today.getDay());
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 6);
-  const lastWeekEnd = new Date(startOfWeek);
-  lastWeekEnd.setDate(startOfWeek.getDate() - 1);
 
-  if (boxDate > endOfWeek) {
-    return 'white'; // Not due
-  } else if (boxDate >= startOfWeek && boxDate <= endOfWeek && !completed) {
-    return 'amber'; // Due
-  } else if (boxDate <= lastWeekEnd && !completed) {
-    return 'red'; // Overdue
-  } else if (boxDate <= endOfWeek && completed) {
+  if (boxDate > today && boxDate <= endOfWeek) {
+    return 'amber'; // Due soon (not clickable)
+  } else if (boxDate.toDateString() === today.toDateString() && !completed) {
+    return 'amber'; // Due today (clickable)
+  } else if (boxDate < today && !completed) {
+    return 'red'; // Overdue (clickable)
+  } else if (completed) {
     return 'green'; // Completed
   }
   return '';
+};
+
+const isClickable = (date: string): boolean => {
+  const today = new Date();
+  const boxDate = new Date(date);
+  return boxDate.toDateString() === today.toDateString() || boxDate < today; // Clickable if due today or overdue
 };
 
 interface BoxGridProps {
@@ -58,16 +62,6 @@ const BoxGrid: React.FC<BoxGridProps> = ({ boxState, setBoxState, setCompletedTa
         return box;
       })
     );
-  };
-
-  const isClickable = (date: string): boolean => {
-    const today = new Date();
-    const boxDate = new Date(date);
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    return boxDate <= endOfWeek; // Only allow clicking for tasks due this week or earlier
   };
 
   const groupedBoxes = boxState.reduce((acc, box) => {
