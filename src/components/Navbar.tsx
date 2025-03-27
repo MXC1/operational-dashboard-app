@@ -6,8 +6,12 @@ const Navbar: React.FC = () => {
   return (
     <nav className="navbar">
       <ul>
-        <li><Link to="/">Dashboard</Link></li>
-        <li><Link to="/completion-log">Completion Log</Link></li>
+        <li>
+          <Link to="/" onClick={() => console.log('Navigating to Dashboard')}>Dashboard</Link>
+        </li>
+        <li>
+          <Link to="/completion-log" onClick={() => console.log('Navigating to Completion Log')}>Completion Log</Link>
+        </li>
       </ul>
     </nav>
   );

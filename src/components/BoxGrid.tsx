@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './BoxGrid.css';
 
-interface Box {
+export interface Box { // Export the Box interface
+  id: string; // Unique identifier for each task
   title: string;
   subtitle: string;
   category: string;
   date: string; // ISO format date string
   completed: boolean; // New field to indicate completion
 }
-
-const boxes: Box[] = [
-  { title: 'Task 1', subtitle: 'Subtitle 1', category: 'Monitoring and \nIncident Management', date: '2025-03-17', completed: false },
-  { title: 'Task 2', subtitle: 'Subtitle 2', category: 'Monitoring and \nIncident Management', date: '2025-03-27', completed: true },
-  { title: 'Task 3', subtitle: 'Subtitle 3', category: 'Release Management', date: '2025-03-29', completed: false },
-  { title: 'Task 4', subtitle: 'Subtitle 4', category: 'Release Management', date: '2025-04-01', completed: true },
-  { title: 'Task 5', subtitle: 'Subtitle 5', category: 'NBO Operations', date: '2025-02-27', completed: false },
-];
 
 const getBoxColor = (date: string, completed: boolean): string => {
   const today = new Date();
@@ -39,16 +32,31 @@ const getBoxColor = (date: string, completed: boolean): string => {
   return '';
 };
 
-const BoxGrid: React.FC = () => {
-  const [boxState, setBoxState] = useState<Box[]>(boxes);
+interface BoxGridProps {
+  boxState: Box[];
+  setBoxState: React.Dispatch<React.SetStateAction<Box[]>>;
+  completedTasks: Box[];
+  setCompletedTasks: React.Dispatch<React.SetStateAction<Box[]>>;
+}
 
+const BoxGrid: React.FC<BoxGridProps> = ({ boxState, setBoxState, setCompletedTasks }) => {
   const toggleCompleted = (category: string, index: number) => {
+    console.log(`Toggling completion for category: ${category}, index: ${index}`);
     setBoxState((prevState) =>
-      prevState.map((box) =>
-        box.category === category && prevState.filter(b => b.category === category).indexOf(box) === index
-          ? { ...box, completed: !box.completed }
-          : box
-      )
+      prevState.map((box) => {
+        const isTargetBox = box.category === category && prevState.filter(b => b.category === category).indexOf(box) === index;
+        if (isTargetBox) {
+          const updatedBox = { ...box, completed: !box.completed };
+          console.log(`Updated box:`, updatedBox);
+          setCompletedTasks((prevCompleted) =>
+            updatedBox.completed
+              ? [...prevCompleted, updatedBox]
+              : prevCompleted.filter((task) => task.id !== updatedBox.id)
+          );
+          return updatedBox;
+        }
+        return box;
+      })
     );
   };
 
@@ -80,7 +88,10 @@ const BoxGrid: React.FC = () => {
               <div
                 key={index}
                 className={`box ${getBoxColor(box.date, box.completed)} ${!isClickable(box.date) ? 'non-clickable' : ''}`}
-                onClick={isClickable(box.date) ? () => toggleCompleted(category, index) : undefined}
+                onClick={isClickable(box.date) ? () => {
+                  console.log(`Box clicked:`, box);
+                  toggleCompleted(category, index);
+                } : undefined}
               >
                 <h3>{box.title}</h3>
                 <p>{box.subtitle}</p>
