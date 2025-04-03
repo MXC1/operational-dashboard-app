@@ -1,10 +1,8 @@
 #root {
-  max-width: 80vw;
-  margin: 0;
-  padding: 0;
   display: flex;
   align-items: flex-start;
   height: 100vh;
+  position: relative; /* Ensure proper stacking context */
 }
 
 .app-container {
@@ -13,10 +11,12 @@
 }
 
 .content {
-  margin-left: 200px; /* Leave space for the navbar */
-  padding: 2rem;
+  margin-left: 232px; 
+  /* padding-left: 2rem; */
   flex: 1;
-  width: 100%;
+  width: calc(100% - 200px);
+  display: block; 
+  position: relative;
 }
 
 .logo {

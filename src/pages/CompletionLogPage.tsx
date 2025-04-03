@@ -6,8 +6,6 @@ interface CompletionLogPageProps {
 }
 
 const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks }) => {
-  console.log(`Rendering CompletionLogPage with tasks:`, completedTasks);
-
   return (
     <div className="completion-log-page">
       <div className="completion-log">

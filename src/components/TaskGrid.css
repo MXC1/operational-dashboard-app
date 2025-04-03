@@ -1,0 +1,53 @@
+.task-grid {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    /* margin: 20px auto; */
+}
+
+.header {
+    font-weight: bold;
+    text-align: center;
+    background: #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.status-label {
+    font-weight: bold;
+    text-align: left;
+    background: #eee;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.task-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    /* padding: 10px; */
+    min-height: 50px;
+}
+
+.task {
+    padding: 8px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Due Status Colors */
+.overdue { background: darkred; color: white; }
+.due-today { background: orange; }
+.due-soon { background: lightgrey; }
+.completed { background: green; color: white; }
+
+/* Empty cell placeholder */
+.task.empty {
+    background: transparent;
+    border: 1px dashed #ccc;
+    cursor: auto;
+    height: 100%;
+    padding: 0;
+}
