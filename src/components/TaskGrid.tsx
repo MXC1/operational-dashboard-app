@@ -87,7 +87,8 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                   >
                     <strong>{task.title}</strong>
                     <p>{task.subtitle}</p>
-                    <p>{task.dueDate}</p>
+                    <p>Due: {task.dueDate}</p>
+                    {task.completedDate && <p>Completed: {task.completedDate}</p>}
                   </div>
                 )) || <div className="task empty"></div>}
               </div>
