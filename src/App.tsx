@@ -13,7 +13,7 @@ const tasks = [
     { id: "4", title: "Task 4", subtitle: "Subtitle 4", category: "Release Management", date: "2025-04-01", completed: true },
     { id: "5", title: "Task 5", subtitle: "Subtitle 5", category: "NBO Operations", date: "2025-02-27", completed: false },
     { id: "6", title: "Task 6", subtitle: "Subtitle 6", category: "Monitoring and Incident Management", date: "2025-04-03", completed: false },
-    { id: "7", title: "Task 7", subtitle: "Subtitle 7", category: "NBO Operations", date: "2025-04-04", completed: false },
+    { id: "7", title: "Task 7", subtitle: "Subtitle 7", category: "NBO Operations", date: "2025-04-05", completed: false },
     { id: "8", title: "Task 8", subtitle: "Subtitle 8", category: "NBO Operations", date: "2025-04-04", completed: false },
     { id: "9", title: "Task 9", subtitle: "Subtitle 9", category: "Release Management", date: "2025-04-01", completed: true },
 ];

@@ -38,9 +38,12 @@ const getDueStatus = (task: Task): string => {
 
 // Organize tasks into a Map<Category, Map<DueStatus, Task[]>>
 const groupTasks = (tasks: Task[]) => {
+  // Sort tasks by date in ascending order
+  const sortedTasks = tasks.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
   const grouped = new Map<string, Map<string, Task[]>>();
 
-  tasks.forEach((task) => {
+  sortedTasks.forEach((task) => {
     const category = task.category;
     const status = getDueStatus(task);
 
