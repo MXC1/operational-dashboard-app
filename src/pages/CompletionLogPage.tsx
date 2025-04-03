@@ -2,7 +2,7 @@ import React from 'react';
 import './CompletionLogPage.css';
 
 interface CompletionLogPageProps {
-  completedTasks: { id: string; title: string; date: string }[];
+  completedTasks: { key: string; title: string; date: string }[];
 }
 
 const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks }) => {
@@ -16,7 +16,7 @@ const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks })
         </div>
         <ul>
           {completedTasks.map((task) => (
-            <li key={task.id}>
+            <li key={task.key}>
               <span className="task-title">{task.title}</span>
               <span className="task-date">{task.date}</span>
             </li>

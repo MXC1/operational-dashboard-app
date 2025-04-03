@@ -2,7 +2,7 @@ import React from "react";
 
 // Task Type
 interface Task {
-  id: string;
+  key: string; // Changed from id to key
   title: string;
   subtitle: string;
   category: string;
@@ -13,7 +13,7 @@ interface Task {
 // Component Props
 interface TaskGridProps {
   tasks: Task[];
-  toggleTaskCompletion: (taskId: string) => void;
+  toggleTaskCompletion: (taskKey: string) => void; // Updated to use key
 }
 
 // Status & Category Lists
@@ -74,15 +74,15 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
 
         {/* Rows (Statuses) */}
         {STATUSES.map((status) => (
-          <>
+          <React.Fragment key={status}> {/* Added key prop */}
             <div className="status-label">{status}</div>
             {categories.map((category) => (
               <div key={`${category}-${status}`} className="task-container">
                 {groupedTasks.get(category)?.get(status)?.map((task) => (
                   <div
-                    key={task.id}
+                    key={task.key} // Updated to use key
                     className={`task ${status.toLowerCase().replace(" ", "-")}`}
-                    onClick={() => toggleTaskCompletion(task.id)}
+                    onClick={() => toggleTaskCompletion(task.key)} // Updated to use key
                   >
                     <strong>{task.title}</strong>
                     <p>{task.subtitle}</p>
@@ -91,7 +91,7 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                 )) || <div className="task empty"></div>}
               </div>
             ))}
-          </>
+          </React.Fragment>
         ))}
       </div>
     </div>
