@@ -6,7 +6,8 @@ interface Task {
   title: string;
   subtitle: string;
   category: string;
-  date: string;
+  dueDate: string;
+  completedDate: string;
   completed: boolean;
 }
 
@@ -21,7 +22,7 @@ const STATUSES = ["Overdue", "Due Today", "Due Soon", "Completed"];
 
 const getDueStatus = (task: Task): string => {
   const today = new Date();
-  const dueDate = new Date(task.date);
+  const dueDate = new Date(task.dueDate);
 
   const startOfWeek = new Date(today);
   startOfWeek.setDate(today.getDate() - today.getDay());
@@ -39,7 +40,7 @@ const getDueStatus = (task: Task): string => {
 // Organize tasks into a Map<Category, Map<DueStatus, Task[]>>
 const groupTasks = (tasks: Task[]) => {
   // Sort tasks by date in ascending order
-  const sortedTasks = tasks.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const sortedTasks = tasks.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
   const grouped = new Map<string, Map<string, Task[]>>();
 
@@ -86,7 +87,7 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                   >
                     <strong>{task.title}</strong>
                     <p>{task.subtitle}</p>
-                    <p>{task.date}</p>
+                    <p>{task.dueDate}</p>
                   </div>
                 )) || <div className="task empty"></div>}
               </div>

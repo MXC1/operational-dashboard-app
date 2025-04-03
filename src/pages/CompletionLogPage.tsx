@@ -2,7 +2,7 @@ import React from 'react';
 import './CompletionLogPage.css';
 
 interface CompletionLogPageProps {
-  completedTasks: { key: string; title: string; date: string }[];
+  completedTasks: { key: string; title: string; dueDate: string; completedDate: string }[];
 }
 
 const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks }) => {
@@ -10,18 +10,24 @@ const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks })
     <div className="completion-log-page">
       <div className="completion-log">
         <h2>Completion Log</h2>
-        <div className="completion-log-header">
-          <span className="task-title-header">Task</span>
-          <span className="task-date-header">Date Completed</span>
-        </div>
-        <ul>
-          {completedTasks.map((task) => (
-            <li key={task.key}>
-              <span className="task-title">{task.title}</span>
-              <span className="task-date">{task.date}</span>
-            </li>
-          ))}
-        </ul>
+        <table className="completion-log-table">
+          <thead>
+            <tr>
+              <th className="task-title-header">Task</th>
+              <th className="task-date-header">Due Date</th>
+              <th className="task-date-header">Completed Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {completedTasks.map((task) => (
+              <tr key={task.key}>
+                <td className="task-title">{task.title}</td>
+                <td className="task-date">{task.dueDate}</td>
+                <td className="task-date">{task.completedDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

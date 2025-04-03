@@ -7,15 +7,15 @@ import "./App.css";
 import CompletionLogPage from "./pages/CompletionLogPage";
 
 const tasks = [
-    { key: "1", title: "Task 1", subtitle: "Subtitle 1", category: "Monitoring and Incident Management", date: "2025-03-17", completed: false },
-    { key: "2", title: "Task 2", subtitle: "Subtitle 2", category: "Monitoring and Incident Management", date: "2025-03-27", completed: true },
-    { key: "3", title: "Task 3", subtitle: "Subtitle 3", category: "Release Management", date: "2025-03-29", completed: false },
-    { key: "4", title: "Task 4", subtitle: "Subtitle 4", category: "Release Management", date: "2025-04-01", completed: true },
-    { key: "5", title: "Task 5", subtitle: "Subtitle 5", category: "NBO Operations", date: "2025-02-27", completed: false },
-    { key: "6", title: "Task 6", subtitle: "Subtitle 6", category: "Monitoring and Incident Management", date: "2025-04-03", completed: false },
-    { key: "7", title: "Task 7", subtitle: "Subtitle 7", category: "NBO Operations", date: "2025-04-05", completed: false },
-    { key: "8", title: "Task 8", subtitle: "Subtitle 8", category: "NBO Operations", date: "2025-04-04", completed: false },
-    { key: "9", title: "Task 9", subtitle: "Subtitle 9", category: "Release Management", date: "2025-04-01", completed: true },
+    { key: "1", title: "Task 1", subtitle: "Subtitle 1", category: "Monitoring and Incident Management", dueDate: "2025-03-17", completedDate: "", completed: false },
+    { key: "2", title: "Task 2", subtitle: "Subtitle 2", category: "Monitoring and Incident Management", dueDate: "2025-03-27", completedDate: "2025-04-03", completed: true },
+    { key: "3", title: "Task 3", subtitle: "Subtitle 3", category: "Release Management", dueDate: "2025-03-29", completedDate: "", completed: false },
+    { key: "4", title: "Task 4", subtitle: "Subtitle 4", category: "Release Management", dueDate: "2025-04-01", completedDate: "2025-04-03", completed: true },
+    { key: "5", title: "Task 5", subtitle: "Subtitle 5", category: "NBO Operations", dueDate: "2025-02-27", completedDate: "", completed: false },
+    { key: "6", title: "Task 6", subtitle: "Subtitle 6", category: "Monitoring and Incident Management", dueDate: "2025-04-03", completedDate: "", completed: false },
+    { key: "7", title: "Task 7", subtitle: "Subtitle 7", category: "NBO Operations", dueDate: "2025-04-05", completedDate: "", completed: false },
+    { key: "8", title: "Task 8", subtitle: "Subtitle 8", category: "NBO Operations", dueDate: "2025-04-04", completedDate: "", completed: false },
+    { key: "9", title: "Task 9", subtitle: "Subtitle 9", category: "Release Management", dueDate: "2025-04-01", completedDate: "2025-03-28", completed: true },
 ];
 
 const App: React.FC = () => {
@@ -26,7 +26,11 @@ const App: React.FC = () => {
         setTaskList((prevTasks) =>
             prevTasks.map((task) => {
                 if (task.key === taskKey) {
-                    const updatedTask = { ...task, completed: !task.completed };
+                    const updatedTask = {
+                        ...task,
+                        completed: !task.completed,
+                        completedDate: !task.completed ? new Date().toISOString().split("T")[0] : ""
+                    };
                     if (updatedTask.completed) {
                         setCompletedTasks((prevCompleted) => [...prevCompleted, updatedTask]);
                     } else {
