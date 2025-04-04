@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
+import axios from "axios";
 import TaskGrid from "./components/TaskGrid";
 import Navbar from "./components/Navbar";
 import "./components/TaskGrid.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import CompletionLogPage from "./pages/CompletionLogPage";
+import "./components/LoadingSpinner.css"; // Import spinner styles
 
 type Task = {
   key: string;
@@ -20,22 +21,34 @@ type Task = {
 
 const App: React.FC = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
-  const [completedTasks, setCompletedTasks] = useState(taskList.filter(task => task.completed));
+  const [completedTasks, setCompletedTasks] = useState(
+    taskList.filter((task) => task.completed)
+  );
   const [userName, setUserName] = useState(() => {
     // Retrieve the user name from local storage or use a default value
     return localStorage.getItem("userName") || "<Choose>";
   });
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchAndPopulateTasks = async () => {
-      const response = await axios.get(`https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev`);
-      console.log(`Response data: ${JSON.stringify(response.data)}`);
-      setTaskList(response.data);
-      populateCompletionLog(response.data);
+      setIsLoading(true); // Set loading to true before fetching
+      try {
+        const response = await axios.get(
+          `https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev`
+        );
+        console.log(`Response data: ${JSON.stringify(response.data)}`);
+        setTaskList(response.data);
+        populateCompletionLog(response.data);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      } finally {
+        setIsLoading(false); // Set loading to false after fetching
+      }
     };
 
     const populateCompletionLog = async (taskList: Task[]) => {
-      const completedTasks = taskList.filter(task => task.completed);
+      const completedTasks = taskList.filter((task) => task.completed);
       setCompletedTasks(completedTasks);
     };
 
@@ -49,10 +62,15 @@ const App: React.FC = () => {
   };
 
   const updateDynamoDBWithTask = async (updatedTask: Task) => {
-      // Call the API to replace the task in DynamoDB
-      axios.post("https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev", updatedTask, {
-        headers: { "Content-Type": "application/json" },
-      })
+    // Call the API to replace the task in DynamoDB
+    axios
+      .post(
+        "https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev",
+        updatedTask,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      )
       .then((response) => {
         console.log("Task updated in DynamoDB:", response.data);
       })
@@ -68,31 +86,44 @@ const App: React.FC = () => {
           const updatedTask = {
             ...task,
             completed: !task.completed,
-            completedDate: !task.completed ? new Date().toISOString().split("T")[0] : "",
+            completedDate: !task.completed
+              ? new Date().toISOString().split("T")[0]
+              : "",
             completedBy: !task.completed ? userName : "", // Set or remove completedBy
           };
-  
+
           // Optimistically update the task locally
           if (updatedTask.completed) {
-            setCompletedTasks((prevCompleted) => [...prevCompleted, updatedTask]);
+            setCompletedTasks((prevCompleted) => [
+              ...prevCompleted,
+              updatedTask,
+            ]);
           } else {
             setCompletedTasks((prevCompleted) =>
-              prevCompleted.filter((completedTask) => completedTask.key !== taskKey)
+              prevCompleted.filter(
+                (completedTask) => completedTask.key !== taskKey
+              )
             );
           }
-  
+
           updateDynamoDBWithTask(updatedTask);
-  
+
           return updatedTask;
         }
         return task;
       })
     );
   };
-  
 
   return (
     <BrowserRouter>
+      {isLoading ? (
+        <div className="loading-spinner-container">
+          <div className="loading-spinner"></div>
+        </div>
+      ) : (
+        <div />
+      )}
       <div className="app-container">
         <Navbar />
         <div className="user-dropdown">
@@ -111,8 +142,20 @@ const App: React.FC = () => {
         </div>
         <div className="content">
           <Routes>
-            <Route path="/" element={<TaskGrid tasks={taskList} toggleTaskCompletion={toggleTaskCompletion} username={userName} />} />
-            <Route path="/completion-log" element={<CompletionLogPage completedTasks={completedTasks} />} />
+            <Route
+              path="/"
+              element={
+                <TaskGrid
+                  tasks={taskList}
+                  toggleTaskCompletion={toggleTaskCompletion}
+                  username={userName}
+                />
+              }
+            />
+            <Route
+              path="/completion-log"
+              element={<CompletionLogPage completedTasks={completedTasks} />}
+            />
           </Routes>
         </div>
       </div>
