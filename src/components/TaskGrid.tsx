@@ -15,6 +15,7 @@ interface Task {
 interface TaskGridProps {
   tasks: Task[];
   toggleTaskCompletion: (taskKey: string) => void;
+  username: string; 
 }
 
 // Status & Category Lists
@@ -79,7 +80,7 @@ const groupTasks = (tasks: Task[]) => {
   return grouped;
 };
 
-const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
+const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion, username }) => {
   const groupedTasks = groupTasks(tasks);
   const categories = Array.from(groupedTasks.keys());
 
@@ -138,6 +139,7 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                           <button
                             className="mark-completed-button"
                             onClick={() => toggleTaskCompletion(task.key)}
+                            disabled={username === "<Choose>"} // Disable button if username is "Choose"
                           >
                             {task.completed ? "Mark Incomplete" : "Mark Complete"}
                           </button>

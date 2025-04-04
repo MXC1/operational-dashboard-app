@@ -23,7 +23,7 @@ const App: React.FC = () => {
   const [completedTasks, setCompletedTasks] = useState(taskList.filter(task => task.completed));
   const [userName, setUserName] = useState(() => {
     // Retrieve the user name from local storage or use a default value
-    return localStorage.getItem("userName") || "Milo";
+    return localStorage.getItem("userName") || "<Choose>";
   });
 
   useEffect(() => {
@@ -97,6 +97,7 @@ const App: React.FC = () => {
         <Navbar />
         <div className="user-dropdown">
           <select value={userName} onChange={handleUserChange}>
+            <option value="<Choose>">{"<Choose>"}</option>
             <option value="Pedro">Pedro</option>
             <option value="Milo">Milo</option>
             <option value="Adi">Adi</option>
@@ -110,7 +111,7 @@ const App: React.FC = () => {
         </div>
         <div className="content">
           <Routes>
-            <Route path="/" element={<TaskGrid tasks={taskList} toggleTaskCompletion={toggleTaskCompletion} />} />
+            <Route path="/" element={<TaskGrid tasks={taskList} toggleTaskCompletion={toggleTaskCompletion} username={userName} />} />
             <Route path="/completion-log" element={<CompletionLogPage completedTasks={completedTasks} />} />
           </Routes>
         </div>

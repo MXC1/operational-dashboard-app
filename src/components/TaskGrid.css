@@ -97,3 +97,8 @@
     height: 100%;
     padding: 0;
 }
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6; /* Optional: visually indicate the button is disabled */
+}
