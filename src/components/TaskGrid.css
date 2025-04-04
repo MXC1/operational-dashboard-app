@@ -86,6 +86,7 @@
 /* Due Status Colors */
 .overdue { background: darkred; color: white; }
 .due-today { background: orange; }
+.due-tomorrow { background: lightgrey; }
 .upcoming { background: lightgrey; }
 .completed { background: green; color: white; }
 

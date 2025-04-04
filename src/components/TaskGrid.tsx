@@ -19,7 +19,7 @@ interface TaskGridProps {
 }
 
 // Status & Category Lists
-const STATUSES = ["Overdue", "Due Today", "Upcoming", "Completed"];
+const STATUSES = ["Overdue", "Due Today", "Due Tomorrow", "Upcoming", "Completed"];
 
 const getDueStatus = (task: Task): string => {
   const today = new Date();
@@ -31,10 +31,18 @@ const getDueStatus = (task: Task): string => {
   const endOfWeek = new Date(today);
   endOfWeek.setDate(today.getDate() + (6 - today.getDay()));
 
+  const isWeekend = (date: Date) => date.getDay() === 0 || date.getDay() === 6;
+
+  // Calculate next working day
+  const nextWorkingDay = new Date(today);
+  do {
+    nextWorkingDay.setDate(nextWorkingDay.getDate() + 1);
+  } while (isWeekend(nextWorkingDay));
+
   if (task.completed) return "Completed";
   if (dueDate.toDateString() === today.toDateString()) return "Due Today";
+  if (dueDate.toDateString() === nextWorkingDay.toDateString()) return "Due Tomorrow";
   if (dueDate < today) return "Overdue";
-  if (dueDate >= startOfWeek && dueDate <= endOfWeek) return "Upcoming";
   return "Upcoming";
 };
 
