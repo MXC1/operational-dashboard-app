@@ -37,6 +37,20 @@ const getDueStatus = (task: Task): string => {
   return "";
 };
 
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = date.toLocaleDateString("en-US", { weekday: "long" });
+  const dayOfMonth = date.getDate();
+  const month = date.toLocaleDateString("en-US", { month: "long" });
+  const year = date.getFullYear();
+
+  const suffix = (dayOfMonth % 10 === 1 && dayOfMonth !== 11) ? "st" :
+                 (dayOfMonth % 10 === 2 && dayOfMonth !== 12) ? "nd" :
+                 (dayOfMonth % 10 === 3 && dayOfMonth !== 13) ? "rd" : "th";
+
+  return `${day} ${dayOfMonth}${suffix} ${month} ${year}`;
+};
+
 // Organize tasks into a Map<Category, Map<DueStatus, Task[]>>
 const groupTasks = (tasks: Task[]) => {
   // Sort tasks by date in ascending order
@@ -86,8 +100,8 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                   >
                     <div className="task-left">
                       <strong>{task.title}</strong>
-                      <p>Due: {task.dueDate}</p>
-                      {task.completedDate && <p>Completed: {task.completedDate}</p>}
+                      <p>Due: {formatDate(task.dueDate)}</p>
+                      {task.completedDate && <p>Completed: {formatDate(task.completedDate)}</p>}
                     </div>
                     <div className="task-right">
                       <a href={task.processURL} className="process-button">
