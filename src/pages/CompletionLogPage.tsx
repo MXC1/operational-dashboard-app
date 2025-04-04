@@ -2,7 +2,7 @@ import React from 'react';
 import './CompletionLogPage.css';
 
 interface CompletionLogPageProps {
-  completedTasks: { key: string; title: string; dueDate: string; completedDate: string }[];
+  completedTasks: { key: string; title: string; dueDate: string; completedDate: string; completedBy: string }[];
 }
 
 const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks }) => {
@@ -16,6 +16,7 @@ const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks })
               <th className="task-title-header">Task</th>
               <th className="task-date-header">Due Date</th>
               <th className="task-date-header">Completed Date</th>
+              <th className="task-date-header">Completed By</th>
             </tr>
           </thead>
           <tbody>
@@ -24,6 +25,7 @@ const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks })
                 <td className="task-title">{task.title}</td>
                 <td className="task-date">{task.dueDate}</td>
                 <td className="task-date">{task.completedDate}</td>
+                <td className="task-date">{task.completedBy}</td>
               </tr>
             ))}
           </tbody>

@@ -15,6 +15,7 @@ type Task = {
   dueDate: string;
   completedDate: string;
   completed: boolean;
+  completedBy: string;
 };
 
 const App: React.FC = () => {
