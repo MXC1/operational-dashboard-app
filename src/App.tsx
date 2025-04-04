@@ -38,6 +38,12 @@ const App: React.FC = () => {
       const response = await axios.get(`https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev`);
       console.log(`Response data: ${JSON.stringify(response.data)}`);
       setTaskList(response.data);
+      populateCompletionLog(response.data);
+    };
+
+    const populateCompletionLog = async (taskList: Task[]) => {
+      const completedTasks = taskList.filter(task => task.completed);
+      setCompletedTasks(completedTasks);
     };
 
     fetchAndPopulateTasks();
