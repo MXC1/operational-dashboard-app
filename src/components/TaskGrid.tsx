@@ -34,7 +34,7 @@ const getDueStatus = (task: Task): string => {
   if (dueDate.toDateString() === today.toDateString()) return "Due Today";
   if (dueDate < today) return "Overdue";
   if (dueDate >= startOfWeek && dueDate <= endOfWeek) return "Due Soon";
-  return "";
+  return "Due Soon";
 };
 
 const formatDate = (dateString: string): string => {
