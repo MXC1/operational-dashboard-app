@@ -44,9 +44,14 @@ const formatDate = (dateString: string): string => {
   const month = date.toLocaleDateString("en-US", { month: "long" });
   const year = date.getFullYear();
 
-  const suffix = (dayOfMonth % 10 === 1 && dayOfMonth !== 11) ? "st" :
-                 (dayOfMonth % 10 === 2 && dayOfMonth !== 12) ? "nd" :
-                 (dayOfMonth % 10 === 3 && dayOfMonth !== 13) ? "rd" : "th";
+  const suffix =
+    dayOfMonth % 10 === 1 && dayOfMonth !== 11
+      ? "st"
+      : dayOfMonth % 10 === 2 && dayOfMonth !== 12
+        ? "nd"
+        : dayOfMonth % 10 === 3 && dayOfMonth !== 13
+          ? "rd"
+          : "th";
 
   return `${day} ${dayOfMonth}${suffix} ${month} ${year}`;
 };
@@ -54,7 +59,9 @@ const formatDate = (dateString: string): string => {
 // Organize tasks into a Map<Category, Map<DueStatus, Task[]>>
 const groupTasks = (tasks: Task[]) => {
   // Sort tasks by date in ascending order
-  const sortedTasks = tasks.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+  const sortedTasks = tasks.sort(
+    (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+  );
 
   const grouped = new Map<string, Map<string, Task[]>>();
 
@@ -63,7 +70,8 @@ const groupTasks = (tasks: Task[]) => {
     const status = getDueStatus(task);
 
     if (!grouped.has(category)) grouped.set(category, new Map());
-    if (!grouped.get(category)?.has(status)) grouped.get(category)?.set(status, []);
+    if (!grouped.get(category)?.has(status))
+      grouped.get(category)?.set(status, []);
 
     grouped.get(category)?.get(status)?.push(task);
   });
@@ -78,44 +86,63 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
   return (
     <div>
       <h1>Task Grid</h1>
-      <div className="task-grid" style={{ gridTemplateColumns: `repeat(${categories.length + 1}, 1fr)` }}>
+      <div
+        className="task-grid"
+        style={{ gridTemplateColumns: `repeat(${categories.length + 1}, 1fr)` }}
+      >
         {/* First empty cell for alignment */}
         <div className="header empty"></div>
 
         {/* Headers (Categories) */}
         {categories.map((category) => (
-          <div key={category} className="header">{category}</div>
+          <div key={category} className="header">
+            {category}
+          </div>
         ))}
 
         {/* Rows (Statuses) */}
         {STATUSES.map((status) => (
-          <React.Fragment key={status}> {/* Added key prop */}
+          <React.Fragment key={status}>
+            {" "}
+            {/* Added key prop */}
             <div className="status-label">{status}</div>
             {categories.map((category) => (
               <div key={`${category}-${status}`} className="task-container">
-                {groupedTasks.get(category)?.get(status)?.map((task) => (
-                  <div
-                    key={task.key} // Updated to use key
-                    className={`task ${status.toLowerCase().replace(" ", "-")}`}
-                  >
-                    <div className="task-left">
-                      <strong>{task.title}</strong>
-                      <p>Due: {formatDate(task.dueDate)}</p>
-                      {task.completedDate && <p>Completed: {formatDate(task.completedDate)}</p>}
+                {groupedTasks
+                  .get(category)
+                  ?.get(status)
+                  ?.map((task) => (
+                    <div
+                      key={task.key} // Updated to use key
+                      className={`task ${status.toLowerCase().replace(" ", "-")}`}
+                    >
+                      <div className="task-left">
+                        <strong>{task.title}</strong>
+                        <p>Due: {formatDate(task.dueDate)}</p>
+                        {task.completedDate && (
+                          <p>Completed: {formatDate(task.completedDate)}</p>
+                        )}
+                      </div>
+                      <div className="task-right">
+                        {task.processURL && (
+                          <button
+                            className="process-button"
+                            onClick={() =>
+                              window.open(task.processURL, "_blank")
+                            }
+                          >
+                            Process
+                          </button>
+                        )}
+                        <button
+                          className="mark-completed-button"
+                          onClick={() => toggleTaskCompletion(task.key)} // Updated to use key
+                        >
+                          Mark Complete
+                        </button>
+                      </div>
                     </div>
-                    <div className="task-right">
-                      <a href={task.processURL} className="process-button">
-                        Process
-                      </a>
-                      <button
-                        className="mark-completed-button"
-                        onClick={() => toggleTaskCompletion(task.key)} // Updated to use key
-                      >
-                        Mark Completed
-                      </button>
-                    </div>
-                  </div>
-                )) || <div className="task empty"></div>}
+                  )) || <div className="task empty"></div>}
               </div>
             ))}
           </React.Fragment>
