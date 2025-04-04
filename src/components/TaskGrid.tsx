@@ -2,7 +2,7 @@ import React from "react";
 
 // Task Type
 interface Task {
-  key: string; // Changed from id to key
+  key: string; 
   title: string;
   processURL: string;
   category: string;
@@ -14,11 +14,11 @@ interface Task {
 // Component Props
 interface TaskGridProps {
   tasks: Task[];
-  toggleTaskCompletion: (taskKey: string) => void; // Updated to use key
+  toggleTaskCompletion: (taskKey: string) => void;
 }
 
 // Status & Category Lists
-const STATUSES = ["Overdue", "Due Today", "Due Soon", "Completed"];
+const STATUSES = ["Overdue", "Due Today", "Upcoming", "Completed"];
 
 const getDueStatus = (task: Task): string => {
   const today = new Date();
@@ -33,8 +33,8 @@ const getDueStatus = (task: Task): string => {
   if (task.completed) return "Completed";
   if (dueDate.toDateString() === today.toDateString()) return "Due Today";
   if (dueDate < today) return "Overdue";
-  if (dueDate >= startOfWeek && dueDate <= endOfWeek) return "Due Soon";
-  return "Due Soon";
+  if (dueDate >= startOfWeek && dueDate <= endOfWeek) return "Upcoming";
+  return "Upcoming";
 };
 
 const formatDate = (dateString: string): string => {
@@ -134,12 +134,14 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                             Link to Process
                           </button>
                         )}
-                        <button
-                          className="mark-completed-button"
-                          onClick={() => toggleTaskCompletion(task.key)} // Updated to use key
-                        >
-                          {task.completed ? "Mark Incomplete" : "Mark Complete"}
-                        </button>
+                        {new Date(task.dueDate) <= new Date() && (
+                          <button
+                            className="mark-completed-button"
+                            onClick={() => toggleTaskCompletion(task.key)}
+                          >
+                            {task.completed ? "Mark Incomplete" : "Mark Complete"}
+                          </button>
+                        )}
                       </div>
                     </div>
                   )) || <div className="task empty"></div>}
