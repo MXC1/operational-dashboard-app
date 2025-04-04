@@ -131,14 +131,14 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                               window.open(task.processURL, "_blank")
                             }
                           >
-                            Process
+                            Link to Process
                           </button>
                         )}
                         <button
                           className="mark-completed-button"
                           onClick={() => toggleTaskCompletion(task.key)} // Updated to use key
                         >
-                          Mark Complete
+                          {task.completed ? "Mark Incomplete" : "Mark Complete"}
                         </button>
                       </div>
                     </div>
