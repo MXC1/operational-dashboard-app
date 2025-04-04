@@ -54,3 +54,22 @@
 .read-the-docs {
   color: #888;
 }
+
+.user-dropdown {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  /* padding: 0.5rem 1rem; */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.user-dropdown select {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}

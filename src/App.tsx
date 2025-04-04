@@ -7,18 +7,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import CompletionLogPage from "./pages/CompletionLogPage";
 
-// const tasks = [
-//     { key: "1", title: "Task 1", subtitle: "Subtitle 1", category: "Monitoring and Incident Management", dueDate: "2025-03-17", completedDate: "", completed: false },
-//     { key: "2", title: "Task 2", subtitle: "Subtitle 2", category: "Monitoring and Incident Management", dueDate: "2025-03-27", completedDate: "2025-04-03", completed: true },
-//     { key: "3", title: "Task 3", subtitle: "Subtitle 3", category: "Release Management", dueDate: "2025-03-29", completedDate: "", completed: false },
-//     { key: "4", title: "Task 4", subtitle: "Subtitle 4", category: "Release Management", dueDate: "2025-04-01", completedDate: "2025-04-03", completed: true },
-//     { key: "5", title: "Task 5", subtitle: "Subtitle 5", category: "NBO Operations", dueDate: "2025-02-27", completedDate: "", completed: false },
-//     { key: "6", title: "Task 6", subtitle: "Subtitle 6", category: "Monitoring and Incident Management", dueDate: "2025-04-03", completedDate: "", completed: false },
-//     { key: "7", title: "Task 7", subtitle: "Subtitle 7", category: "NBO Operations", dueDate: "2025-04-05", completedDate: "", completed: false },
-//     { key: "8", title: "Task 8", subtitle: "Subtitle 8", category: "NBO Operations", dueDate: "2025-04-04", completedDate: "", completed: false },
-//     { key: "9", title: "Task 9", subtitle: "Subtitle 9", category: "Release Management", dueDate: "2025-04-01", completedDate: "2025-03-28", completed: true },
-// ];
-
 type Task = {
   key: string;
   title: string;
@@ -32,6 +20,10 @@ type Task = {
 const App: React.FC = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [completedTasks, setCompletedTasks] = useState(taskList.filter(task => task.completed));
+  const [userName, setUserName] = useState(() => {
+    // Retrieve the user name from local storage or use a default value
+    return localStorage.getItem("userName") || "Milo";
+  });
 
   useEffect(() => {
     const fetchAndPopulateTasks = async () => {
@@ -48,6 +40,12 @@ const App: React.FC = () => {
 
     fetchAndPopulateTasks();
   }, []);
+
+  const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedUser = e.target.value;
+    setUserName(selectedUser);
+    localStorage.setItem("userName", selectedUser); // Save the selected user to local storage
+  };
 
   const updateDynamoDBWithTask = async (updatedTask: Task) => {
       // Call the API to replace the task in DynamoDB
@@ -70,6 +68,7 @@ const App: React.FC = () => {
             ...task,
             completed: !task.completed,
             completedDate: !task.completed ? new Date().toISOString().split("T")[0] : "",
+            completedBy: !task.completed ? userName : "", // Set or remove completedBy
           };
   
           // Optimistically update the task locally
@@ -95,6 +94,19 @@ const App: React.FC = () => {
     <BrowserRouter>
       <div className="app-container">
         <Navbar />
+        <div className="user-dropdown">
+          <select value={userName} onChange={handleUserChange}>
+            <option value="Pedro">Pedro</option>
+            <option value="Milo">Milo</option>
+            <option value="Adi">Adi</option>
+            <option value="Henry">Henry</option>
+            <option value="Lewis">Lewis</option>
+            <option value="Emma">Emma</option>
+            <option value="Tubor">Tubor</option>
+            <option value="Steve">Steve</option>
+            <option value="Izaac">Izaac</option>
+          </select>
+        </div>
         <div className="content">
           <Routes>
             <Route path="/" element={<TaskGrid tasks={taskList} toggleTaskCompletion={toggleTaskCompletion} />} />
