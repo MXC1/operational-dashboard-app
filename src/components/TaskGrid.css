@@ -30,12 +30,53 @@
 }
 
 .task {
-    /* padding: 8px; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
     border-radius: 5px;
-    text-align: center;
+    text-align: left;
+    font-size: 14px;
+    /* cursor: pointer; */
+}
+
+.task-left {
+    flex: 1;
+}
+
+.task-right {
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 5px; /* Adjust spacing between buttons */
+}
+
+.process-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
     font-size: 14px;
     cursor: pointer;
-    /* width: 100px; */
+}
+
+.process-button:hover {
+    background: #0056b3;
+}
+
+.mark-completed-button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.mark-completed-button:hover {
+    background: #1e7e34;
 }
 
 .task p {

@@ -4,7 +4,7 @@ import React from "react";
 interface Task {
   key: string; // Changed from id to key
   title: string;
-  subtitle: string;
+  processURL: string;
   category: string;
   dueDate: string;
   completedDate: string;
@@ -83,12 +83,23 @@ const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion }) => {
                   <div
                     key={task.key} // Updated to use key
                     className={`task ${status.toLowerCase().replace(" ", "-")}`}
-                    onClick={() => toggleTaskCompletion(task.key)} // Updated to use key
                   >
-                    <strong>{task.title}</strong>
-                    <p>{task.subtitle}</p>
-                    <p>Due: {task.dueDate}</p>
-                    {task.completedDate && <p>Completed: {task.completedDate}</p>}
+                    <div className="task-left">
+                      <strong>{task.title}</strong>
+                      <p>Due: {task.dueDate}</p>
+                      {task.completedDate && <p>Completed: {task.completedDate}</p>}
+                    </div>
+                    <div className="task-right">
+                      <a href={task.processURL} className="process-button">
+                        Process
+                      </a>
+                      <button
+                        className="mark-completed-button"
+                        onClick={() => toggleTaskCompletion(task.key)} // Updated to use key
+                      >
+                        Mark Completed
+                      </button>
+                    </div>
                   </div>
                 )) || <div className="task empty"></div>}
               </div>

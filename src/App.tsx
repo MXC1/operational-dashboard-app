@@ -22,7 +22,7 @@ import CompletionLogPage from "./pages/CompletionLogPage";
 type Task = {
   key: string;
   title: string;
-  subtitle: string;
+  processURL: string;
   category: string;
   dueDate: string;
   completedDate: string;
