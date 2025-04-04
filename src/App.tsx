@@ -49,16 +49,30 @@ const App: React.FC = () => {
     fetchAndPopulateTasks();
   }, []);
 
+  const updateDynamoDBWithTask = async (updatedTask: Task) => {
+      // Call the API to replace the task in DynamoDB
+      axios.post("https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev", updatedTask, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        console.log("Task updated in DynamoDB:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error updating task:", error);
+      });
+  };
 
-  const toggleTaskCompletion = (taskKey: string) => {
+  const toggleTaskCompletion = async (taskKey: string) => {
     setTaskList((prevTasks) =>
       prevTasks.map((task) => {
         if (task.key === taskKey) {
           const updatedTask = {
             ...task,
             completed: !task.completed,
-            completedDate: !task.completed ? new Date().toISOString().split("T")[0] : ""
+            completedDate: !task.completed ? new Date().toISOString().split("T")[0] : "",
           };
+  
+          // Optimistically update the task locally
           if (updatedTask.completed) {
             setCompletedTasks((prevCompleted) => [...prevCompleted, updatedTask]);
           } else {
@@ -66,12 +80,16 @@ const App: React.FC = () => {
               prevCompleted.filter((completedTask) => completedTask.key !== taskKey)
             );
           }
+  
+          updateDynamoDBWithTask(updatedTask);
+  
           return updatedTask;
         }
         return task;
       })
     );
   };
+  
 
   return (
     <BrowserRouter>
