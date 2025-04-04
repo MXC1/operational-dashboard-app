@@ -33,11 +33,12 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchAndPopulateTasks = async () => {
       setIsLoading(true); // Set loading to true before fetching
+      console.log('Fetching tasks...');
       try {
         const response = await axios.get(
           `https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev`
         );
-        console.log(`Response data: ${JSON.stringify(response.data)}`);
+        console.log('Tasks fetched successfully:', response.data);
         setTaskList(response.data);
         populateCompletionLog(response.data);
       } catch (error) {
@@ -48,6 +49,7 @@ const App: React.FC = () => {
     };
 
     const populateCompletionLog = async (taskList: Task[]) => {
+      console.log('Populating completion log with tasks:', taskList);
       const completedTasks = taskList.filter((task) => task.completed);
       setCompletedTasks(completedTasks);
     };
@@ -57,11 +59,13 @@ const App: React.FC = () => {
 
   const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedUser = e.target.value;
+    console.log('User changed to:', selectedUser);
     setUserName(selectedUser);
     localStorage.setItem("userName", selectedUser); // Save the selected user to local storage
   };
 
   const updateDynamoDBWithTask = async (updatedTask: Task) => {
+    console.log('Updating task in DynamoDB:', updatedTask);
     // Call the API to replace the task in DynamoDB
     axios
       .post(
@@ -80,6 +84,7 @@ const App: React.FC = () => {
   };
 
   const toggleTaskCompletion = async (taskKey: string) => {
+    console.log('Toggling task completion for taskKey:', taskKey);
     setTaskList((prevTasks) =>
       prevTasks.map((task) => {
         if (task.key === taskKey) {
@@ -91,6 +96,8 @@ const App: React.FC = () => {
               : "",
             completedBy: !task.completed ? userName : "", // Set or remove completedBy
           };
+
+          console.log('Updated task:', updatedTask);
 
           // Optimistically update the task locally
           if (updatedTask.completed) {
