@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import TaskGrid from "./components/TaskGrid";
+import TaskGrid from "./pages/TaskGrid";
 import Navbar from "./components/Navbar";
-import "./components/TaskGrid.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import CompletionLogPage from "./pages/CompletionLogPage";
 import "./components/LoadingSpinner.css"; // Import spinner styles
+import NewTaskForm from "./pages/newTaskForm";
 
 type Task = {
   key: string;
@@ -162,6 +162,10 @@ const App: React.FC = () => {
             <Route
               path="/completion-log"
               element={<CompletionLogPage completedTasks={completedTasks} />}
+            />
+            <Route
+              path="/new-task-form"
+              element={<NewTaskForm />}
             />
           </Routes>
         </div>
