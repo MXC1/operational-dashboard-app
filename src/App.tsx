@@ -50,7 +50,9 @@ const App: React.FC = () => {
 
     const populateCompletionLog = async (taskList: Task[]) => {
       console.log('Populating completion log with tasks:', taskList);
-      const completedTasks = taskList.filter((task) => task.completed);
+      const completedTasks = taskList
+        .filter((task) => task.completed)
+        .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()); // Sort by due date descending
       setCompletedTasks(completedTasks);
     };
 
