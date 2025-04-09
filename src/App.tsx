@@ -175,6 +175,11 @@ const App: React.FC = () => {
     const newSelectedTeam = team === selectedTeam ? null : team;
     setSelectedTeam(newSelectedTeam);
     localStorage.setItem("selectedTeam", newSelectedTeam || "");
+    
+    // Reset username to default when the team changes
+    const defaultUserName = "<Choose>";
+    setUserName(defaultUserName);
+    localStorage.setItem("userName", defaultUserName);
   };
 
   return (
