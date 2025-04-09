@@ -7,10 +7,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import CompletionLogPage from "./pages/CompletionLogPage";
 import "./components/LoadingSpinner.css"; // Import spinner styles
+import HeaderBar from "./components/HeaderBar";
 
 type Task = {
   key: string;
   title: string;
+  team: string;
   processURL: string;
   category: string;
   dueDate: string;
@@ -19,11 +21,22 @@ type Task = {
   completedBy: string;
 };
 
+type Team = {
+  key: string;
+  teamName: string;
+  members: string[];
+}
+
 const App: React.FC = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
-  const [completedTasks, setCompletedTasks] = useState(
-    taskList.filter((task) => task.completed)
-  );
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<string | null>(() => {
+    // Retrieve the last selected team from local storage or use null
+    return localStorage.getItem("selectedTeam");
+  });
+
   const [userName, setUserName] = useState(() => {
     // Retrieve the user name from local storage or use a default value
     return localStorage.getItem("userName") || "<Choose>";
@@ -40,7 +53,9 @@ const App: React.FC = () => {
         );
         console.log('Tasks fetched successfully:', response.data);
         setTaskList(response.data);
-        populateCompletionLog(response.data);
+        setFilteredTasks(response.data); // Initialize filtered tasks
+        await populateCompletionLog(response.data);
+        await getAndSetTeams();
       } catch (error) {
         console.error("Error fetching tasks:", error);
       } finally {
@@ -56,8 +71,41 @@ const App: React.FC = () => {
       setCompletedTasks(completedTasks);
     };
 
+    const getAndSetTeams = async () => {
+      // Call axios get to fetch teams from the API
+      console.log('Fetching teams...');
+      try {
+        const response = await axios.get(
+          `https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev/teams`
+        );
+        console.log('Teams fetched successfully:', response.data);
+        setTeams(response.data);
+      } catch (error: any) {
+        console.error('Error fetching teams:', error.response?.data || error.message);
+      }
+    }
+
     fetchAndPopulateTasks();
   }, []);
+
+
+  useEffect(() => {
+    if (selectedTeam) {
+      setFilteredTasks(taskList.filter((task) => task.team === selectedTeam));
+      setCompletedTasks(
+        taskList
+          .filter((task) => task.completed && task.team === selectedTeam)
+          .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime())
+      );
+    } else {
+      setFilteredTasks(taskList);
+      setCompletedTasks(
+        taskList
+          .filter((task) => task.completed)
+          .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime())
+      );
+    }
+  }, [selectedTeam, taskList]);
 
   const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedUser = e.target.value;
@@ -68,7 +116,6 @@ const App: React.FC = () => {
 
   const updateDynamoDBWithTask = async (updatedTask: Task) => {
     console.log('Updating task in DynamoDB:', updatedTask);
-    // Call the API to replace the task in DynamoDB
     axios
       .post(
         "https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev",
@@ -96,12 +143,11 @@ const App: React.FC = () => {
             completedDate: !task.completed
               ? new Date().toISOString().split("T")[0]
               : "",
-            completedBy: !task.completed ? userName : "", // Set or remove completedBy
+            completedBy: !task.completed ? userName : "",
           };
 
           console.log('Updated task:', updatedTask);
 
-          // Optimistically update the task locally
           if (updatedTask.completed) {
             setCompletedTasks((prevCompleted) => [
               ...prevCompleted,
@@ -124,6 +170,13 @@ const App: React.FC = () => {
     );
   };
 
+  const filterByTeam = (team: string) => {
+    console.log("Filtering tasks by team:", team);
+    const newSelectedTeam = team === selectedTeam ? null : team;
+    setSelectedTeam(newSelectedTeam);
+    localStorage.setItem("selectedTeam", newSelectedTeam || "");
+  };
+
   return (
     <BrowserRouter>
       {isLoading ? (
@@ -134,39 +187,53 @@ const App: React.FC = () => {
         <div />
       )}
       <div className="app-container">
-        <Navbar />
-        <div className="user-dropdown">
-          <select value={userName} onChange={handleUserChange}>
-            <option value="<Choose>">{"<Choose>"}</option>
-            <option value="Pedro">Pedro</option>
-            <option value="Milo">Milo</option>
-            <option value="Adi">Adi</option>
-            <option value="Henry">Henry</option>
-            <option value="Lewis">Lewis</option>
-            <option value="Emma">Emma</option>
-            <option value="Tubor">Tubor</option>
-            <option value="Steve">Steve</option>
-            <option value="Izaac">Izaac</option>
-          </select>
-        </div>
-        <div className="content">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <TaskGrid
-                  tasks={taskList}
-                  toggleTaskCompletion={toggleTaskCompletion}
-                  username={userName}
+        <HeaderBar
+          teamNames={teams.map((team) => team.teamName)}
+          filterByTeam={filterByTeam}
+          selectedTeam={selectedTeam}
+        />
+        {selectedTeam && (
+          <>
+            <Navbar />
+            <div className="user-dropdown">
+              <select value={userName} onChange={handleUserChange}>
+                <option value="<Choose>">{"<Choose>"}</option>
+                {teams
+                  .find((team) => team.teamName === selectedTeam)
+                  ?.members.map((member) => (
+                    <option key={member} value={member}>
+                      {member}
+                    </option>
+                  ))}
+              </select>
+
+            </div>
+            <div className="content">
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <TaskGrid
+                      tasks={filteredTasks}
+                      toggleTaskCompletion={toggleTaskCompletion}
+                      username={userName}
+                      teamName={selectedTeam} // Pass selected team name
+                    />
+                  }
                 />
-              }
-            />
-            <Route
-              path="/completion-log"
-              element={<CompletionLogPage completedTasks={completedTasks} />}
-            />
-          </Routes>
-        </div>
+                <Route
+                  path="/completion-log"
+                  element={
+                    <CompletionLogPage
+                      completedTasks={completedTasks}
+                      teamName={selectedTeam} // Pass selected team name
+                    />
+                  }
+                />
+              </Routes>
+            </div>
+          </>
+        )}
       </div>
     </BrowserRouter>
   );

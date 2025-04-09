@@ -16,6 +16,7 @@ interface TaskGridProps {
   tasks: Task[];
   toggleTaskCompletion: (taskKey: string) => void;
   username: string; 
+  teamName: string; 
 }
 
 // Status & Category Lists
@@ -88,13 +89,13 @@ const groupTasks = (tasks: Task[]) => {
   return grouped;
 };
 
-const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion, username }) => {
+const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion, username, teamName }) => {
   const groupedTasks = groupTasks(tasks);
   const categories = Array.from(groupedTasks.keys());
 
   return (
     <div>
-      <h1>Task Grid</h1>
+      <h1>{teamName} Tasks</h1> 
       <div
         className="task-grid"
         style={{ gridTemplateColumns: `repeat(${categories.length + 1}, 1fr)` }}

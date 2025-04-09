@@ -3,13 +3,14 @@ import './CompletionLogPage.css';
 
 interface CompletionLogPageProps {
   completedTasks: { key: string; title: string; dueDate: string; completedDate: string; completedBy: string }[];
+  teamName: string; 
 }
 
-const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks }) => {
+const CompletionLogPage: React.FC<CompletionLogPageProps> = ({ completedTasks, teamName }) => {
   return (
     <div className="completion-log-page">
       <div className="completion-log">
-        <h2>Completion Log</h2>
+        <h2>{teamName} Completion Log</h2>
         <table className="completion-log-table">
           <thead>
             <tr>
