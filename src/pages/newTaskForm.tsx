@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import "./newTaskForm.css";
 
 interface FormData {
@@ -15,7 +15,7 @@ interface NewTaskFormProps {
 }
 
 const NewTaskForm: React.FC<NewTaskFormProps> = ({ selectedTeam }) => {
-  const { register, handleSubmit, control, reset, setValue, watch } = useForm<FormData>({
+  const { register, handleSubmit, reset, setValue, watch } = useForm<FormData>({
     defaultValues: {
       team: "",
       title: "",
