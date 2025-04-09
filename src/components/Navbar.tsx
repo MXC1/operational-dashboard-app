@@ -7,10 +7,13 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <ul>
         <li>
-          <Link to="/" onClick={() => console.log('Navigating to Dashboard')}>Dashboard</Link>
+          <Link to="/" onClick={() => console.log('Navigating to /')}>Dashboard</Link>
         </li>
         <li>
-          <Link to="/completion-log" onClick={() => console.log('Navigating to Completion Log')}>Completion Log</Link>
+          <Link to="/completion-log" onClick={() => console.log('Navigating to /completion-log')}>Completion Log</Link>
+        </li>
+        <li>
+          <Link to="/new-task-form" onClick={() => console.log('Navigating to /new-task-form')}>Add new task</Link>
         </li>
       </ul>
     </nav>

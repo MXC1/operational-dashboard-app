@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import TaskGrid from "./components/TaskGrid";
+import TaskGrid from "./pages/TaskGrid";
 import Navbar from "./components/Navbar";
-import "./components/TaskGrid.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import CompletionLogPage from "./pages/CompletionLogPage";
 import "./components/LoadingSpinner.css"; // Import spinner styles
+import NewTaskForm from "./pages/newTaskForm";
 import HeaderBar from "./components/HeaderBar";
 
 type Task = {
@@ -229,6 +229,10 @@ const App: React.FC = () => {
                       teamName={selectedTeam} // Pass selected team name
                     />
                   }
+                />
+                <Route
+                  path="/new-task-form"
+                  element={<NewTaskForm />}
                 />
               </Routes>
             </div>
