@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import "./newTaskForm.css";
 
@@ -6,19 +6,30 @@ interface FormData {
   team: string;
   title: string;
   category: string;
-  weekDays: string[]; // Changed to an array of strings
+  weekDays: string[]; 
   processUrl: string;
 }
 
-const NewTaskForm: React.FC = () => {
+interface NewTaskFormProps {
+  selectedTeam: string | null;
+}
+
+const NewTaskForm: React.FC<NewTaskFormProps> = ({ selectedTeam }) => {
   const { register, handleSubmit, control, reset, setValue, watch } = useForm<FormData>({
     defaultValues: {
+      team: "",
       title: "",
       category: "",
-      weekDays: [], // Default to an empty array
+      weekDays: [], 
       processUrl: "",
     },
   });
+
+  useEffect(() => {
+    if (selectedTeam) {
+      setValue("team", selectedTeam);
+    }
+  }, [selectedTeam, setValue]);
 
   const weekDays = watch("weekDays"); 
 
@@ -29,19 +40,37 @@ const NewTaskForm: React.FC = () => {
     setValue("weekDays", updatedWeekDays); 
   };
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    reset(); // Reset form after submission
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await fetch("https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev/new-task-configuration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+  
+      console.log("Task submitted successfully:", await response.json());
+      reset();
+    } catch (error) {
+      console.error("Failed to submit task:", error);
+    }
   };
 
   return (
     <form className="new-task-form" onSubmit={handleSubmit(onSubmit)}>
+      <h2>{selectedTeam} New Task Form</h2>
       <div className="form-group">
         <label htmlFor="team">Team:</label>
         <input
           type="text"
           id="team"
           {...register("team", { required: true })}
+          disabled={!!selectedTeam} 
         />
       </div>
       <div className="form-group">
@@ -79,7 +108,7 @@ const NewTaskForm: React.FC = () => {
         <input
           type="url"
           id="processUrl"
-          {...register("processUrl", { required: true })}
+          {...register("processUrl", { required: false })}
         />
       </div>
       <button type="submit">Submit</button>
