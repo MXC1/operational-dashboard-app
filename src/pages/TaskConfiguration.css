@@ -1,0 +1,29 @@
+.task-configuration-container {
+  padding: 20px;
+}
+
+.task-configuration-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.task-configuration-table th,
+.task-configuration-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.task-configuration-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.task-configuration-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.task-configuration-table tr:hover {
+  background-color: #f1f1f1;
+}

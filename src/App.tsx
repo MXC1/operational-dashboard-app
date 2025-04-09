@@ -8,6 +8,7 @@ import CompletionLogPage from "./pages/CompletionLogPage";
 import "./components/LoadingSpinner.css"; // Import spinner styles
 import NewTaskForm from "./pages/newTaskForm";
 import HeaderBar from "./components/HeaderBar";
+import TaskConfiguration from "./pages/TaskConfiguration"; // Import TaskConfiguration
 
 type Task = {
   key: string;
@@ -27,6 +28,15 @@ type Team = {
   members: string[];
 }
 
+type TaskConfigurationType = {
+  key: string;
+  title: string;
+  team: string;
+  processURL: string;
+  category: string;
+  weekDay: string[];
+};
+
 const App: React.FC = () => {
   const [taskList, setTaskList] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
@@ -42,6 +52,7 @@ const App: React.FC = () => {
     return localStorage.getItem("userName") || "<Choose>";
   });
   const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [taskConfigurations, setTaskConfigurations] = useState<TaskConfigurationType[]>([]);
 
   useEffect(() => {
     const fetchAndPopulateTasks = async () => {
@@ -85,7 +96,29 @@ const App: React.FC = () => {
       }
     }
 
+    const fetchTaskConfigurations = async () => {
+      console.log("Fetching task configurations...");
+      try {
+        const response = await axios.get(
+          "https://0a90f42pjl.execute-api.eu-west-2.amazonaws.com/dev/new-task-configuration"
+        );
+        console.log("Task configurations fetched successfully:", response.data);
+        const configurations = response.data.map((config: any) => ({
+          key: config.key.S,
+          title: config.title.S,
+          team: config.team.S,
+          processURL: config.processURL.S,
+          category: config.category.S,
+          weekDay: config.weekDay.SS,
+        }));
+        setTaskConfigurations(configurations);
+      } catch (error) {
+        console.error("Error fetching task configurations:", error);
+      }
+    };
+
     fetchAndPopulateTasks();
+    fetchTaskConfigurations();
   }, []);
 
 
@@ -106,6 +139,10 @@ const App: React.FC = () => {
       );
     }
   }, [selectedTeam, taskList]);
+
+  const filteredTaskConfigurations = selectedTeam
+    ? taskConfigurations.filter((config) => config.team === selectedTeam)
+    : taskConfigurations;
 
   const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedUser = e.target.value;
@@ -238,6 +275,10 @@ const App: React.FC = () => {
                 <Route
                   path="/new-task-form"
                   element={<NewTaskForm selectedTeam={selectedTeam} />}
+                />
+                <Route
+                  path="/task-configuration"
+                  element={<TaskConfiguration taskConfigurations={filteredTaskConfigurations} />}
                 />
               </Routes>
             </div>
