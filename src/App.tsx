@@ -232,7 +232,7 @@ const App: React.FC = () => {
                 />
                 <Route
                   path="/new-task-form"
-                  element={<NewTaskForm />}
+                  element={<NewTaskForm selectedTeam={selectedTeam} />}
                 />
               </Routes>
             </div>
