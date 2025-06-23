@@ -76,9 +76,28 @@ const groupTasks = (tasks: Task[]) => {
 
   const grouped = new Map<string, Map<string, Task[]>>();
 
+  // Calculate start and end of current week (Monday to Friday)
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  // Monday = 1, Sunday = 0
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
+  monday.setHours(0, 0, 0, 0);
+  const friday = new Date(monday);
+  friday.setDate(monday.getDate() + 4);
+  friday.setHours(23, 59, 59, 999);
+
   sortedTasks.forEach((task) => {
     const category = task.category;
     const status = getDueStatus(task);
+
+    // Only filter Completed tasks for this week
+    if (status === "Completed") {
+      const dueDate = new Date(task.dueDate);
+      if (dueDate < monday || dueDate > friday) {
+        return; // Skip tasks not due this week
+      }
+    }
 
     if (!grouped.has(category)) grouped.set(category, new Map());
     if (!grouped.get(category)?.has(status))
@@ -92,7 +111,8 @@ const groupTasks = (tasks: Task[]) => {
 
 const TaskGrid: React.FC<TaskGridProps> = ({ tasks, toggleTaskCompletion, username, teamName }) => {
   const groupedTasks = groupTasks(tasks);
-  const categories = Array.from(groupedTasks.keys());
+  // Sort categories alphabetically for consistent column order
+  const categories = Array.from(groupedTasks.keys()).sort();
 
   return (
     <div>
