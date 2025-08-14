@@ -88,7 +88,7 @@ resource "aws_codebuild_project" "site_build" {
 }
 
 resource "aws_iam_role" "codepipeline_role" {
-  name = "codepipeline_role"
+  name = "codepipeline_role-${terraform.workspace}"
   assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role_policy.json
 }
 
@@ -103,7 +103,7 @@ data "aws_iam_policy_document" "codepipeline_assume_role_policy" {
 }
 
 resource "aws_iam_role" "codebuild_role" {
-  name = "codebuild_role"
+  name = "codebuild_role-${terraform.workspace}"
   assume_role_policy = data.aws_iam_policy_document.codebuild_assume_role_policy.json
 }
 
@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "codebuild_assume_role_policy" {
 }
 
 resource "aws_iam_policy" "codepipeline_policy" {
-  name        = "codepipeline_policy"
+  name        = "codepipeline_policy-${terraform.workspace}"
   description = "Policy for CodePipeline to access S3 and CodeBuild"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -160,7 +160,7 @@ resource "aws_iam_role_policy_attachment" "codepipeline_policy_attach" {
 }
 
 resource "aws_iam_policy" "codebuild_policy" {
-  name        = "codebuild_policy"
+  name        = "codebuild_policy-${terraform.workspace}"
   description = "Policy for CodeBuild to access S3, CloudFront, and CloudWatch Logs"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -204,7 +204,7 @@ resource "aws_iam_role_policy_attachment" "codebuild_policy_attach" {
 
 # Add permission for CodePipeline to use the CodeStar Connection
 resource "aws_iam_policy" "codestar_connections_policy" {
-  name        = "codestar_connections_policy"
+  name        = "codestar_connections_policy-${terraform.workspace}"
   description = "Allow CodePipeline to use CodeStar Connections"
   policy = jsonencode({
     Version = "2012-10-17"
